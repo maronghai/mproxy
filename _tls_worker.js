@@ -1,0 +1,19 @@
+
+const tls = require("node:tls");
+process.on("message", (msg, socket) => {
+  if (msg === "handle") {
+    console.log("[worker] got socket handle, wrapping with TLS...");
+    const tlsSock = new tls.TLSSocket(socket, {
+      isServer: true,
+      cert: "-----BEGIN CERTIFICATE-----\nMIID4zCCApugAwIBAgIIMVezm55kMD4wPQYJKoZIhvcNAQEKMDCgDTALBglghkgB\nZQMEAgGhGjAYBgkqhkiG9w0BAQgwCwYJYIZIAWUDBAIBogMCASAwVjELMAkGA1UE\nBhMCVVMxDDAKBgNVBAgTA0RldjEOMAwGA1UEBxMFUHJveHkxEjAQBgNVBAoTCVph\naSBQcm94eTEVMBMGA1UEAxMMWmFpIFByb3h5IENBMB4XDTI2MDYxMjExMzg1NloX\nDTI3MDYxMjExMzg1NlowVDELMAkGA1UEBhMCVVMxDDAKBgNVBAgTA0RldjEOMAwG\nA1UEBxMFUHJveHkxEjAQBgNVBAoTCVphaSBQcm94eTETMBEGA1UEAxMKdGVzdC5s\nb2NhbDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK6DJ8qg+GlII/5v\n5Oa9/jRK5c0sA8lgdCO1Lfme/rKoYdriExAmCkWimzV9sXDh1+t6wvKyl2j+5t2K\nciF7/GyAUELgvTyiVe4VlI48k1snD35ok2XROiLbgJYBayV1y98dvKwm1BiJSxZ7\nkL+dexf+kQ2K24jg9pLDV9CmyG1X5A76cXIJ+3oqFoXlAiQnxB6w/qOkR79GL6We\nGHCAV4gTRpUdfNDYQqH051utXGp/vmSXR7OJH3n9zbJil3qLreGinCzXLy9wgS5G\nNxo3pvnF1HI0CJo161p1c3q1F4vjAlBGkjtw+/nVCmtO9cmOTNrw2aqxIivXgOMc\nFdyosCMCAwEAAaNXMFUwCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCBaAwEwYDVR0l\nBAwwCgYIKwYBBQUHAwEwIwYDVR0RBBwwGoIKdGVzdC5sb2NhbIIMKi50ZXN0Lmxv\nY2FsMD0GCSqGSIb3DQEBCjAwoA0wCwYJYIZIAWUDBAIBoRowGAYJKoZIhvcNAQEI\nMAsGCWCGSAFlAwQCAaIDAgEgA4IBAQCUADXKDAxzhVbHL+xuWDrnSaDG98AsrtJS\nncpXYcvyaLp1T0eZg1XJ1IDcvh0DRt8eceENGodnVy9XHeeVyvipDGUWgJ3eiPLw\nBI1H6kAbWaiKinS4tDdFbzWN5UsQt5azn/IUSws9uZh+Fu4bBrTs3VI8kNuQpBMm\nuV4PGNCY2kZ2QOHwDkluLFd/oXD48LhDbIuI99xX5wtEuEsq7sNQc6mZbNr9XBiu\nGNlpUf7EvoJ5bk0y9gSBr0JCUuhIuQec2RKuwmasYj4C/EIaAJNDSzJwxPRhDrFp\nsaAevTcBupfm02LZp2wpXU2cCwxN2lpfyQX9+y6Y/Ft3L8sVm5c4\n-----END CERTIFICATE-----",
+      key: "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCugyfKoPhpSCP+\nb+Tmvf40SuXNLAPJYHQjtS35nv6yqGHa4hMQJgpFops1fbFw4dfresLyspdo/ubd\ninIhe/xsgFBC4L08olXuFZSOPJNbJw9+aJNl0Toi24CWAWsldcvfHbysJtQYiUsW\ne5C/nXsX/pENituI4PaSw1fQpshtV+QO+nFyCft6KhaF5QIkJ8QesP6jpEe/Ri+l\nnhhwgFeIE0aVHXzQ2EKh9OdbrVxqf75kl0eziR95/c2yYpd6i63hopws1y8vcIEu\nRjcaN6b5xdRyNAiaNetadXN6tReL4wJQRpI7cPv51QprTvXJjkza8NmqsSIr14Dj\nHBXcqLAjAgMBAAECggEABoPW+crwpd2PmnF1oOJO7zIsn3BD4+y56UCxAAoI2tqh\nF0QsD1pG3+VQ2Lph5COfpVGRSEY/6NI7WYylniJm1hYkPkWYSv80fg2dh4HeGR+9\nhavvH3SkMFD0MqVy6T8bPAUm2gvJDJweNYSqGWfjrzhNv1eubSRuOs8YJC4Aet8m\nqsKuAprxt9LgBSaQrRJ9d67SHrTkSqpbu6zsVgC/4BvsSR8PXG1eMG8ZQmAuwukP\nXMjg2Kcq0vM3W9dxDN9TgxciyCfgjhLT9/4boAc3uLVzOnL5bLBhg3G+ZXbgtn3E\nsGbX0LIlC7PjAmj9EMacOX97Jor0tX1q1I9LtLlfIQKBgQDbgx026C0kaygrDLYm\nNNUudpNrmaDmn4INdZLLDUbfkDvRHsPEHradjB/U0bsZwkxvS2pjjBx8nS87IUEY\nnqWCjqvDyHepoLpoUH7ouiuPY4wvTE0WEnxW9/X0I1ORc42+Y4iaQcVXY5aIl6Bb\nNLAnrLQ76nwTy1jD5VsuffBw3wKBgQDLhSqTaUHPp23qojUV3od41HMLamDQ6uTO\njFSu4KtkEWSZ54+pQ5BH+7+wlqFdiaqhfraOVb13iFRmTSz7RMVYIf+T9452SUzV\nMCahlBDclPyL6EmYBhI3fVyRJFOfwtVIBcNjBv9yB9jMyD4TEpmKl7yePJGhGCVr\nK9kmkNSVPQKBgHLvnP1h5jkabobT+g/ZPAI/DgOaBjibLlJzzG/LPN/UOq3NaP2o\ngz/M3eHmCwx6wuDHYSZMd6H7/337dIU6lDjfESrLLXTA9rml5D1hNWu32O/vCLHU\n7gvve3XghWI0WfRlU2JJq9WNDIXqtojq9o1fjWON7HfE0m6ICg023g2LAoGAL/EI\nnHz5Ab+BBvp64tHuu6ngB9phQBV1HKq18BQAi6wFNLP1hXvi6vIEr8Zr8KrTRQOi\nYVkVLqkwqICZjf8fNamcmPCB4J9XuAiFsR498pgt/Y8UdvlHJUcknRQflszAjRy+\nb/9gAS6UBXlOFhQVky43QlcmPvp/JgXIO2t2iEkCgYEA0rVc0U5q31E6TkyZft8D\nJmcIqp3sKQ2/L/nb9/XBpCwtlwY9bXPplsfaN2PHQTQGGdTQKMXiIUpDy4qv+XkD\n4tUvUzYnDwuZhp6IwgEbqCOpXRf2yy+73tWQi1YMSmrtyIbenN2uYUSfJCRybGCU\nqWNqSfZ+E38ftWrrfMpWFMo=\n-----END PRIVATE KEY-----",
+    });
+    tlsSock.on("handshake", () => console.log("[worker] TLS HANDSHAKE COMPLETE!"));
+    tlsSock.on("data", (data) => {
+      console.log("[worker] decrypted:", data.toString().substring(0, 200));
+      tlsSock.write("HTTP/1.1 200 OK\r\nContent-Length: 13\r\n\r\nHello MITM!!!");
+      setTimeout(() => { tlsSock.destroy(); socket.destroy(); process.exit(0); }, 100);
+    });
+    tlsSock.on("error", (err) => { console.error("[worker] TLS error:", err.message); process.exit(1); });
+  }
+});

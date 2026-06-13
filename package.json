@@ -1,0 +1,21 @@
+{
+  "name": "zai",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run index.ts",
+    "dev": "bun --watch run index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@peculiar/x509": "^2.0.0",
+    "reflect-metadata": "^0.2.2",
+    "zai": "."
+  }
+}
