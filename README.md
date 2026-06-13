@@ -1,4 +1,4 @@
-# Zai - HTTP/HTTPS Proxy with Traffic Capture
+# Mproxy - HTTP/HTTPS Proxy with Traffic Capture
 
 An HTTP/HTTPS forward proxy built with Bun + Node.js that automatically captures all requests and responses to a SQLite database, with a built-in Web UI to view captured traffic.
 
@@ -100,7 +100,7 @@ sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keyc
 
 **Linux:**
 ```bash
-sudo cp .data\ca-cert.pem /usr/local/share/ca-certificates/zai-ca.crt
+sudo cp .data\ca-cert.pem /usr/local/share/ca-certificates/mproxy-ca.crt
 sudo update-ca-certificates
 ```
 

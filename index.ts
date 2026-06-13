@@ -11,7 +11,7 @@ const DB_PATH = process.env.DB_PATH || "proxy.db";
 const DATA_DIR = process.env.DATA_DIR || ".data";
 
 async function main() {
-  console.log("=== Zai Proxy ===\n");
+  console.log("=== Mproxy Proxy ===\n");
 
   console.log("Initializing database...");
   initDB(DB_PATH);
@@ -41,7 +41,7 @@ async function main() {
   console.log(`  Install CA cert to trust HTTPS traffic:`);
   console.log(`    Windows: certutil -addstore -f "Root" ${certManager.getCACertPath()}`);
   console.log(`    macOS:   sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain ${certManager.getCACertPath()}`);
-  console.log(`    Linux:   sudo cp ${certManager.getCACertPath()} /usr/local/share/ca-certificates/zai-ca.crt && sudo update-ca-certificates`);
+  console.log(`    Linux:   sudo cp ${certManager.getCACertPath()} /usr/local/share/ca-certificates/mproxy-ca.crt && sudo update-ca-certificates`);
 }
 
 main().catch((err) => {
