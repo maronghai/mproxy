@@ -1,6 +1,6 @@
 # Zai - HTTP/HTTPS Proxy with Traffic Capture
 
-基于 Bun 构建的 HTTP/HTTPS 正向代理，自动将所有请求和响应保存到 SQLite 数据库，并提供 Web UI 查看捕获的流量。
+基于 Bun + Node.js 构建的 HTTP/HTTPS 正向代理，自动将所有请求和响应保存到 SQLite 数据库，并提供 Web UI 查看捕获的流量。
 
 ## 功能
 
@@ -10,6 +10,26 @@
 - 内置 Web UI 查看捕获的流量
 - 支持 JSON 请求体自动格式化显示
 - 暗色主题界面，自动刷新
+
+## 架构
+
+```
+┌────────────┐     ┌──────────────────┐     ┌─────────────────────┐
+│  Client     │────▶│  Bun Proxy       │────▶│  Target Server      │
+│  (curl/     │     │  (HTTP + HTTPS)  │     │  (httpbin.org etc)  │
+│   browser)  │     │                  │     │                     │
+└────────────┘     │  port 8080 (HTTP)│     └─────────────────────┘
+                   │  port 8443 (HTTPS)│
+                   └──────┬───────────┘
+                          │ fork (IPC)
+                   ┌──────▼───────────┐
+                   │  Node.js Subprocess│
+                   │  (TLS MITM)       │
+                   │  tls_mitm_server.cjs│
+                   └──────────────────┘
+```
+
+HTTPS 流量由 Bun 代理接收 CONNECT 请求后，通过 IPC 将 socket 桥接到 Node.js 子进程进行 TLS 解密和明文记录。
 
 ## 快速开始
 
@@ -52,7 +72,7 @@ curl -x http://localhost:8080 http://example.com
 **curl (HTTPS):**
 
 ```bash
-curl -x http://localhost:8443 https://example.com
+curl -x http://localhost:8443 https://example.com --insecure
 ```
 
 **浏览器:**
@@ -91,12 +111,14 @@ sudo update-ca-certificates
 ## 项目结构
 
 ```
-├── index.ts          # 入口文件
+├── index.ts              # 入口文件
+├── tls_mitm_server.cjs   # Node.js TLS MITM 子进程
 ├── src/
-│   ├── db.ts         # SQLite 数据库操作
-│   ├── cert.ts       # CA 和域名证书生成
-│   ├── proxy.ts      # HTTP + HTTPS 代理服务器
-│   └── viewer.ts     # Web UI 和 API
+│   ├── db.ts             # SQLite 数据库操作
+│   ├── cert.ts           # CA 和域名证书生成
+│   ├── proxy.ts          # HTTP + HTTPS 代理服务器
+│   └── viewer.ts         # Web UI 和 API
+├── .data/                # CA 证书和域名证书存储
 ├── package.json
 └── tsconfig.json
 ```
@@ -132,7 +154,8 @@ CREATE TABLE traffic (
 
 ## 依赖
 
-- [Bun](https://bun.sh/) - JavaScript 运行时
+- [Bun](https://bun.sh/) - JavaScript 运行时（代理服务器 + Web UI）
+- [Node.js](https://nodejs.org/) - TLS MITM 子进程（需安装并在 PATH 中）
 - `bun:sqlite` - SQLite 数据库（Bun 内置）
 - `@peculiar/x509` - X.509 证书生成
 - `node:net` / `node:tls` - TCP/TLS 连接处理

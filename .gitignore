@@ -40,7 +40,7 @@ proxy.db-shm
 proxy.db-wal
 
 test_*
-*_test*
+*_test.db*
 *.log
 server_*
 bun.lock
