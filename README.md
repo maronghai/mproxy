@@ -1,17 +1,17 @@
 # Zai - HTTP/HTTPS Proxy with Traffic Capture
 
-基于 Bun + Node.js 构建的 HTTP/HTTPS 正向代理，自动将所有请求和响应保存到 SQLite 数据库，并提供 Web UI 查看捕获的流量。
+An HTTP/HTTPS forward proxy built with Bun + Node.js that automatically captures all requests and responses to a SQLite database, with a built-in Web UI to view captured traffic.
 
-## 功能
+## Features
 
-- HTTP 正向代理
-- HTTPS MITM 代理（自动生成证书，需安装 CA）
-- 所有请求/响应完整保存到 SQLite
-- 内置 Web UI 查看捕获的流量
-- 支持 JSON 请求体自动格式化显示
-- 暗色主题界面，自动刷新
+- HTTP forward proxy
+- HTTPS MITM proxy (auto-generated certificates, requires CA installation)
+- Complete request/response capture to SQLite
+- Built-in Web UI for traffic inspection
+- Auto-formatted JSON request body display
+- Dark theme interface with auto-refresh
 
-## 架构
+## Architecture
 
 ```
 ┌────────────┐     ┌──────────────────┐     ┌─────────────────────┐
@@ -29,39 +29,39 @@
                    └──────────────────┘
 ```
 
-HTTPS 流量由 Bun 代理接收 CONNECT 请求后，通过 IPC 将 socket 桥接到 Node.js 子进程进行 TLS 解密和明文记录。
+HTTPS traffic is handled by receiving CONNECT requests at the Bun proxy, then bridging the socket via IPC to a Node.js subprocess for TLS decryption and plaintext logging.
 
-## 快速开始
+## Quick Start
 
-### 安装依赖
+### Install Dependencies
 
 ```bash
 bun install
 ```
 
-### 启动服务
+### Start the Server
 
 ```bash
 bun run start
 ```
 
-或开发模式（热重载）：
+Or development mode (with hot reload):
 
 ```bash
 bun run dev
 ```
 
-### 环境变量
+### Environment Variables
 
-| 变量 | 默认值 | 说明 |
-|------|--------|------|
-| `PROXY_PORT` | `8080` | HTTP 代理端口 |
-| `HTTPS_PORT` | `8443` | HTTPS MITM 代理端口 |
-| `VIEWER_PORT` | `3000` | Web UI 端口 |
-| `DB_PATH` | `proxy.db` | SQLite 数据库路径 |
-| `DATA_DIR` | `.data` | 证书和密钥存储目录 |
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PROXY_PORT` | `8080` | HTTP proxy port |
+| `HTTPS_PORT` | `8443` | HTTPS MITM proxy port |
+| `VIEWER_PORT` | `3000` | Web UI port |
+| `DB_PATH` | `proxy.db` | SQLite database path |
+| `DATA_DIR` | `.data` | Certificate and key storage directory |
 
-### 使用代理
+### Using the Proxy
 
 **curl (HTTP):**
 
@@ -75,18 +75,18 @@ curl -x http://localhost:8080 http://example.com
 curl -x http://localhost:8443 https://example.com --insecure
 ```
 
-**浏览器:**
+**Browser:**
 
-在浏览器代理设置中配置：
+Configure proxy settings in your browser:
 
 ```
-HTTP 代理:  localhost:8080
-HTTPS 代理: localhost:8443
+HTTP Proxy:  localhost:8080
+HTTPS Proxy: localhost:8443
 ```
 
-### 安装 CA 证书（HTTPS 需要）
+### Installing CA Certificate (Required for HTTPS)
 
-要查看 HTTPS 流量的明文内容，需要将 CA 证书添加到系统信任列表：
+To view HTTPS traffic in plaintext, add the CA certificate to your system trust store:
 
 **Windows:**
 ```bash
@@ -104,62 +104,62 @@ sudo cp .data\ca-cert.pem /usr/local/share/ca-certificates/zai-ca.crt
 sudo update-ca-certificates
 ```
 
-### 查看流量
+### Viewing Traffic
 
-打开浏览器访问：`http://localhost:3000`
+Open your browser and navigate to: `http://localhost:3000`
 
-## 项目结构
+## Project Structure
 
 ```
-├── index.ts              # 入口文件
-├── tls_mitm_server.cjs   # Node.js TLS MITM 子进程
+├── index.ts              # Entry point
+├── tls_mitm_server.cjs   # Node.js TLS MITM subprocess
 ├── src/
-│   ├── db.ts             # SQLite 数据库操作
-│   ├── cert.ts           # CA 和域名证书生成
-│   ├── proxy.ts          # HTTP + HTTPS 代理服务器
-│   └── viewer.ts         # Web UI 和 API
-├── .data/                # CA 证书和域名证书存储
+│   ├── db.ts             # SQLite database operations
+│   ├── cert.ts           # CA and domain certificate generation
+│   ├── proxy.ts          # HTTP + HTTPS proxy server
+│   └── viewer.ts         # Web UI and API
+├── .data/                # CA certificate and domain certificate storage
 ├── package.json
 └── tsconfig.json
 ```
 
-## API 接口
+## API Endpoints
 
-| 端点 | 说明 |
-|------|------|
-| `GET /api/list?limit=50&offset=0` | 获取流量列表 |
-| `GET /api/detail/:id` | 获取单条流量详情 |
-| `GET /api/stats` | 获取统计信息 |
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/list?limit=50&offset=0` | Get traffic list |
+| `GET /api/detail/:id` | Get single traffic detail |
+| `GET /api/stats` | Get statistics |
 
-## 数据库结构
+## Database Schema
 
 ```sql
 CREATE TABLE traffic (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  method TEXT NOT NULL,           -- HTTP 方法
-  url TEXT NOT NULL,              -- 请求 URL
-  host TEXT,                      -- 目标主机
-  port INTEGER,                   -- 目标端口
-  request_headers TEXT,           -- 请求头 (JSON)
-  request_body BLOB,              -- 请求体
-  status_code INTEGER,            -- 响应状态码
-  response_headers TEXT,          -- 响应头 (JSON)
-  response_body BLOB,             -- 响应体
-  created_at TEXT,                -- 创建时间
-  duration_ms INTEGER,            -- 请求耗时 (ms)
-  client_ip TEXT,                 -- 客户端 IP
-  error TEXT                      -- 错误信息
+  method TEXT NOT NULL,           -- HTTP method
+  url TEXT NOT NULL,              -- Request URL
+  host TEXT,                      -- Target host
+  port INTEGER,                   -- Target port
+  request_headers TEXT,           -- Request headers (JSON)
+  request_body BLOB,              -- Request body
+  status_code INTEGER,            -- Response status code
+  response_headers TEXT,          -- Response headers (JSON)
+  response_body BLOB,             -- Response body
+  created_at TEXT,                -- Creation time
+  duration_ms INTEGER,            -- Request duration (ms)
+  client_ip TEXT,                 -- Client IP
+  error TEXT                      -- Error message
 );
 ```
 
-## 依赖
+## Dependencies
 
-- [Bun](https://bun.sh/) - JavaScript 运行时（代理服务器 + Web UI）
-- [Node.js](https://nodejs.org/) - TLS MITM 子进程（需安装并在 PATH 中）
-- `bun:sqlite` - SQLite 数据库（Bun 内置）
-- `@peculiar/x509` - X.509 证书生成
-- `node:net` / `node:tls` - TCP/TLS 连接处理
+- [Bun](https://bun.sh/) - JavaScript runtime (proxy server + Web UI)
+- [Node.js](https://nodejs.org/) - TLS MITM subprocess (must be installed and in PATH)
+- `bun:sqlite` - SQLite database (built into Bun)
+- `@peculiar/x509` - X.509 certificate generation
+- `node:net` / `node:tls` - TCP/TLS connection handling
 
-## 许可
+## License
 
 MIT
